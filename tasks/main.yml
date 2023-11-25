@@ -1,0 +1,20 @@
+- block:
+    - name: Update apt
+      become: true
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install main packages (git, build-essential, libmysqlclient-dev, mariadb-client, curl, wget)
+      become: true
+      tags: main
+      apt:
+        state: present
+        name: "{{ item }}"
+      loop:
+        - git
+        - build-essential
+        - libmysqlclient-dev
+        - curl
+        - wget
+        - mariadb-client

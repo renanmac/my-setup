@@ -1,0 +1,59 @@
+---
+- name: "Config workstation"
+  hosts: all
+  tasks:
+    - name: Main
+      include_tasks:
+        file: tasks/main.yml
+        apply:
+          tags: main
+      tags: main
+
+    - name: Docker
+      include_tasks:
+        file: tasks/docker.yml
+        apply:
+          tags: docker
+      tags: docker
+
+    - name: ZSH
+      include_tasks:
+        file: tasks/zsh.yml
+        apply:
+          tags: zsh
+      tags: zsh
+
+    - name: ASDF
+      include_tasks:
+        file: tasks/asdf.yml
+        apply:
+          tags: asdf
+      tags: asdf
+
+    - name: VSCode
+      include_tasks:
+        file: tasks/vscode.yml
+        apply:
+          tags: vscode
+      tags: vscode
+
+    - name: Productivity
+      include_tasks:
+        file: tasks/productivity.yml
+        apply:
+          tags: productivity
+      tags: productivity
+
+    - name: Developer tools
+      include_tasks:
+        file: tasks/developer-tools.yml
+        apply:
+          tags: dev
+      tags: dev
+
+    - name: dotfiles
+      include_tasks:
+        file: tasks/dotfiles.yml
+        apply:
+          tags: dotfiles
+      tags: dotfiles

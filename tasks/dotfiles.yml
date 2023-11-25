@@ -1,0 +1,26 @@
+- block:
+    - name: Remove default files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ ansible_user_dir }}/.zshrc"
+        - "{{ ansible_user_dir }}/.gitconfig"
+        - "{{ ansible_user_dir }}/.config/ulauncher/ext_preferences"
+        - "{{ ansible_user_dir }}/.config/ulauncher/extensions.json"
+        - "{{ ansible_user_dir }}/.config/ulauncher/settings.json"
+        - "{{ ansible_user_dir }}/.config/ulauncher/shortcuts.json"
+        - "{{ ansible_user_dir }}/.config/Code/User/globalStorage/state.vscdb"
+        - "{{ ansible_user_dir }}/.config/Code/User/snippets"
+        - "{{ ansible_user_dir }}/.config/Code/User/settings.json"
+        - "{{ ansible_user_dir }}/.config/Code/User/keybindings.json"
+
+    - name: Clone dotfiles
+      git:
+        repo: https://github.com/renanmac/dotfiles
+        dest: "{{ ansible_user_dir }}/.dotfiles"
+
+    - name: Apply dotfiles config (git, vscode, zsh, ulauncher)
+      shell: "cd {{ ansible_user_dir }}/.dotfiles && LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 stow git vscode zsh ulauncher"
+      args:
+        executable: "{{ ansible_user_shell }}"

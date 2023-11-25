@@ -1,0 +1,45 @@
+- block:
+    - name: Install asdf
+      git:
+        repo: https://github.com/asdf-vm/asdf.git
+        dest: "{{ ansible_user_dir }}/.asdf"
+        version: v0.13.1
+
+    - name: Install asdf plugins (ruby, nodejs, golang)
+      shell: "source {{ ansible_user_dir }}/.asdf/asdf.sh && asdf plugin add {{ item }}"
+      args:
+        executable: "{{ ansible_user_shell }}"
+      with_items:
+        - ruby
+        - nodejs
+        - golang
+
+    - name: Install Ruby versions (2.7.8, latest)
+      shell: "source {{ ansible_user_dir }}/.asdf/asdf.sh && asdf install ruby {{ item }}"
+      args:
+        executable: "{{ ansible_user_shell }}"
+      loop:
+        - 2.7.8
+
+    - name: Install NodeJS versions (8.17.0, 16.20.2, latest)
+      shell: "source {{ ansible_user_dir }}/.asdf/asdf.sh && asdf install nodejs {{ item }}"
+      args:
+        executable: "{{ ansible_user_shell }}"
+      loop:
+        - 8.17.0
+        - 16.20.2
+        - 18.18.2
+
+    - name: Install Go versions (latest)
+      shell: source {{ ansible_user_dir }}/.asdf/asdf.sh && asdf install golang latest
+      args:
+        executable: "{{ ansible_user_shell }}"
+
+    - name: Set global version
+      shell: "source {{ ansible_user_dir }}/.asdf/asdf.sh && asdf global {{ item }}"
+      args:
+        executable: "{{ ansible_user_shell }}"
+      loop:
+        - nodejs 18.18.2
+        - golang latest
+        - ruby 2.7.8

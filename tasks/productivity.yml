@@ -1,0 +1,33 @@
+- block:
+    - name: Install productivity packages (copyq, flameshot, zip)
+      become: true
+      tags: productivity
+      apt:
+        state: present
+        name: "{{ item }}"
+      loop:
+        - flameshot
+        - copyq
+        - zip
+
+    - name: Install productivity packages snap (slack, vlc)
+      become: true
+      tags: productivity
+      snap:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - slack
+        - vlc
+
+    - name: Download ulauncher
+      get_url:
+        url: https://github.com/Ulauncher/Ulauncher/releases/download/5.15.6/ulauncher_5.15.6_all.deb
+        dest: /tmp/ulauncher.deb
+
+    - name: Install ulauncher
+      become: true
+      tags: productivity
+      apt:
+        state: present
+        deb: /tmp/ulauncher.deb

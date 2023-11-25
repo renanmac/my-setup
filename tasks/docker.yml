@@ -1,0 +1,47 @@
+- block:
+    - name: Permit add ppas and use ppa over https (apt-transport-https, software-properties-common, ca-certificates, gnupg-agent)
+      become: true
+      apt:
+        state: present
+        name: "{{ item }}"
+      loop:
+        - apt-transport-https
+        - software-properties-common
+        - ca-certificates
+        - gnupg-agent
+
+    - name: Add Docker Key
+      become: true
+      apt_key:
+        url: "https://download.docker.com/linux/ubuntu/gpg"
+        state: present
+
+    - name: Add PPAs
+      become: true
+      apt_repository:
+        state: present
+        repo: "{{ item.repo }}"
+        filename: "{{ item.name }}"
+      loop:
+        - {
+            name: "docker-ce",
+            repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable",
+          }
+
+    - name: Install docker packages
+      become: true
+      apt:
+        state: present
+        name: "{{ item }}"
+      loop:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        - docker-compose-plugin
+
+    - name: Post install docker
+      become: true
+      user:
+        name: "{{ ansible_user_id }}"
+        append: yes
+        group: docker

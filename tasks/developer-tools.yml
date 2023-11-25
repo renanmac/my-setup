@@ -1,0 +1,28 @@
+- block:
+    - name: Install developer tools (tilix, xclip)
+      become: true
+      apt:
+        state: present
+        name: "{{ item }}"
+      loop:
+        - tilix
+        - xclip
+        - stow
+
+    - name: Unzip awscli
+      unarchive:
+        src: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: /tmp
+        remote_src: yes
+
+    - name: Install awscli
+      become: true
+      command: /tmp/aws/install --update
+
+    - name: Install gems (kamal, solargraph)
+      shell: "source {{ ansible_user_dir }}/.asdf/asdf.sh && asdf reshim ruby && gem install {{ item }}"
+      args:
+        executable: "{{ ansible_user_shell }}"
+      loop:
+        - kamal
+        - solargraph

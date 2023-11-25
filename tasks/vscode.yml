@@ -1,0 +1,50 @@
+- block:
+    - name: Download VSCode .deb
+      get_url:
+        url: https://go.microsoft.com/fwlink/?LinkID=760868
+        dest: /tmp/code.deb
+
+    - name: Install VSCode
+      become: true
+      apt:
+        deb: /tmp/code.deb
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install VSCode extensions
+      command: code --install-extension {{ item }}
+      loop:
+        - atlassian.atlascode
+        - bradlc.vscode-tailwindcss
+        - castwide.solargraph
+        - dbaeumer.vscode-eslint
+        - dracula-theme.theme-dracula
+        - eamodio.gitlens
+        - EditorConfig.EditorConfig
+        - GitHub.copilot
+        - GitHub.copilot-chat
+        - golang.go
+        - Gruntfuggly.todo-tree
+        - misogi.ruby-rubocop
+        - ms-azuretools.vscode-docker
+        - MS-CEINTL.vscode-language-pack-pt-BR
+        - ms-vscode-remote.remote-containers
+        - ms-vscode-remote.remote-ssh
+        - ms-vscode-remote.remote-ssh-edit
+        - ms-vscode-remote.remote-wsl
+        - ms-vscode-remote.vscode-remote-extensionpack
+        - ms-vscode.remote-explorer
+        - ms-vscode.remote-server
+        - ms-vsliveshare.vsliveshare
+        - naumovs.color-highlight
+        - Postman.postman-for-vscode
+        - redhat.vscode-yaml
+        - renanmacs.i18n-magic
+        - shd101wyy.markdown-preview-enhanced
+        - Shopify.ruby-lsp
+        - sorbet.sorbet-vscode-extension
+        - styled-components.vscode-styled-components
+        - vscodevim.vim
+        - WakaTime.vscode-wakatime
+        - wix.vscode-import-cost

@@ -1,0 +1,51 @@
+- block:
+    - name: Install zsh
+      become: true
+      apt:
+        state: present
+        name: zsh
+
+    - name: Verify Oh-My-zsh installation
+      command: test -d {{ ansible_user_dir }}/.oh-my-zsh
+      register: ohmyzsh
+      ignore_errors: true
+
+    - name: Install Oh-My-zsh
+      shell:
+        cmd: "curl -fsL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | {{ ansible_user_shell }}"
+        warn: false
+      when: ohmyzsh.rc != 0
+
+    - name: Define zsh as default shell
+      become: true
+      user:
+        name: "{{ ansible_user_id }}"
+        shell: /bin/zsh
+
+    - name: Install zinit plugin manager
+      shell:
+        cmd: "curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh | {{ ansible_user_shell }}"
+      args:
+        executable: "{{ ansible_user_shell }}"
+
+- block:
+    - name: Check if theme exists
+      register: theme
+      command: test -d {{ ansible_user_dir }}/.oh-my-zsh/custom/themes/spaceship-prompt
+      ignore_errors: true
+
+    - name: Clone zsh spaceship theme
+      shell:
+        cmd: "git clone https://github.com/denysdovhan/spaceship-prompt.git ~/.oh-my-zsh/custom/themes/spaceship-prompt --depth=1"
+      when: theme.rc != 0
+
+    - name: Create zsh spaceship theme symlink
+      become: true
+      file:
+        state: link
+        src: "{{ ansible_user_dir }}/.oh-my-zsh/custom/themes/spaceship-prompt/spaceship.zsh-theme"
+        path: "{{ ansible_user_dir }}/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
+
+    - name: Install zinit
+      shell:
+        cmd: "curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh"
