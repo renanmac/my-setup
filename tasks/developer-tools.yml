@@ -8,6 +8,7 @@
         - tilix
         - xclip
         - stow
+        - git-flow
 
     - name: Unzip awscli
       unarchive:
@@ -26,3 +27,15 @@
       loop:
         - kamal
         - solargraph
+
+    - name: Download 1password cli
+      become: true
+      get_url:
+        url: https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
+        dest: /tmp/1p-cli.zip
+
+    - name: Install 1password cli
+      become: true
+      apt:
+        deb: /tmp/1p-cli.zip
+        state: present
